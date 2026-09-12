@@ -1,0 +1,177 @@
+<!-- SIDEBAR -->
+<div class="sidebar">
+
+  <!-- Profile -->
+  <div class="profile-card">
+    <div class="profile-avatar">🧠</div>
+    <div class="profile-name-display" id="profile-name">Neural User</div>
+    <div class="profile-plan-badge" id="profile-plan">SYNAPSE</div>
+    <div class="profile-stats">
+      <div class="profile-stat">
+        <div class="profile-stat-num" id="profile-patterns">0</div>
+        <div class="profile-stat-label">PATTERNS</div>
+      </div>
+      <div class="profile-stat">
+        <div class="profile-stat-num" id="pattern-count">0</div>
+        <div class="profile-stat-label">STORED</div>
+      </div>
+    </div>
+    <div style="margin-top:12px; font-size:0.7rem; color:rgba(255,255,255,0.3);">
+      Member since: <span id="profile-joined" style="color:var(--purple);"></span>
+    </div>
+  </div>
+
+  <!-- System Status -->
+  <div class="sidebar-section-title">SYSTEM STATUS</div>
+  <div class="system-status">
+    <div class="status-row">
+      <span class="status-label">QUANTUM VAULT</span>
+      <span class="status-value">ONLINE ●</span>
+    </div>
+    <div class="status-row">
+      <span class="status-label">ENCRYPTION</span>
+      <span class="status-value">AES-512 ●</span>
+    </div>
+    <div class="status-row">
+      <span class="status-label">NEURAL ENGINE</span>
+      <span class="status-value">ACTIVE ●</span>
+    </div>
+    <div class="status-row">
+      <span class="status-label">QUBITS</span>
+      <span class="status-value">1121 ●</span>
+    </div>
+    <div class="status-row">
+      <span class="status-label">MESH NODES</span>
+      <span class="status-value">2847 ●</span>
+    </div>
+    <div class="status-row">
+      <span class="status-label">REDUNDANCY</span>
+      <span class="status-value">7X ●</span>
+    </div>
+  </div>
+
+  <!-- Live Wave Meters -->
+  <div class="sidebar-section-title">LIVE BRAINWAVE MONITOR</div>
+  <div class="wave-meters">
+    <div class="wave-meter">
+      <span class="wave-meter-label">δ</span>
+      <div class="wave-meter-bar">
+        <div class="wave-meter-fill" id="delta-bar" style="background:linear-gradient(90deg,#6600ff,#9900ff); width:45%;"></div>
+      </div>
+    </div>
+    <div class="wave-meter">
+      <span class="wave-meter-label">θ</span>
+      <div class="wave-meter-bar">
+        <div class="wave-meter-fill" id="theta-bar" style="background:linear-gradient(90deg,#0066ff,#00aaff); width:62%;"></div>
+      </div>
+    </div>
+    <div class="wave-meter">
+      <span class="wave-meter-label">α</span>
+      <div class="wave-meter-bar">
+        <div class="wave-meter-fill" id="alpha-bar" style="background:linear-gradient(90deg,#00aaff,#00ffff); width:78%;"></div>
+      </div>
+    </div>
+    <div class="wave-meter">
+      <span class="wave-meter-label">β</span>
+      <div class="wave-meter-bar">
+        <div class="wave-meter-fill" id="beta-bar" style="background:linear-gradient(90deg,#00ff88,#00ffcc); width:55%;"></div>
+      </div>
+    </div>
+    <div class="wave-meter">
+      <span class="wave-meter-label">γ</span>
+      <div class="wave-meter-bar">
+        <div class="wave-meter-fill" id="gamma-bar" style="background:linear-gradient(90deg,#ffd700,#ffaa00); width:33%;"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MAIN AREA -->
+<div class="main-area">
+
+  <!-- Stats Row -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-card-icon">🧠</div>
+      <div class="stat-card-num" id="total-patterns">0</div>
+      <div class="stat-card-label">NEURAL PATTERNS</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-icon">⚛️</div>
+      <div class="stat-card-num">1121</div>
+      <div class="stat-card-label">QUBITS ACTIVE</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-icon">🔒</div>
+      <div class="stat-card-num">100%</div>
+      <div class="stat-card-label">DATA SECURE</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-icon">⚡</div>
+      <div class="stat-card-num">99.99%</div>
+      <div class="stat-card-label">UPTIME</div>
+    </div>
+  </div>
+
+  <!-- RECORD PATTERN -->
+  <div class="panel" data-title="// RECORD NEURAL PATTERN">
+    <div class="record-grid">
+      <div class="input-group">
+        <label>PATTERN NAME</label>
+        <input type="text" id="pattern-name" placeholder="e.g. Morning Focus Session">
+      </div>
+      <div class="input-group">
+        <label>BRAINWAVE TYPE</label>
+        <select id="wave-type">
+          <option value="DELTA">δ DELTA — Deep Sleep</option>
+          <option value="THETA">θ THETA — Deep Relaxation</option>
+          <option value="ALPHA" selected>α ALPHA — Calm Focus</option>
+          <option value="BETA">β BETA — Active Thinking</option>
+          <option value="GAMMA">γ GAMMA — Peak Performance</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label>DURATION (MINUTES)</label>
+        <input type="number" id="pattern-duration" value="30" min="1" max="480">
+      </div>
+      <div class="input-group">
+        <label>INTENSITY LEVEL — <span id="intensity-display">75%</span></label>
+        <div class="intensity-row">
+          <input type="range" id="pattern-intensity" min="1" max="100" value="75" oninput="updateIntensity(this.value)">
+        </div>
+      </div>
+    </div>
+    <div class="input-group" style="margin-bottom:16px;">
+      <label>NOTES</label>
+      <textarea id="pattern-notes" rows="2" placeholder="Optional notes about this neural session..."></textarea>
+    </div>
+    <button class="save-btn" onclick="savePattern()">⚛ SAVE TO QUANTUM VAULT</button>
+    <div class="save-loading" id="save-loading">⚛ ENCRYPTING AND STORING PATTERN...</div>
+    <div class="dash-error" id="dash-error"></div>
+    <div class="dash-success" id="dash-success"></div>
+  </div>
+
+  <!-- ENCRYPTION DISPLAY -->
+  <div class="panel" data-title="// QUANTUM ENCRYPTION LAYER">
+    <div class="encryption-box" id="encryption-display">
+      AES-512 ENCRYPTION ACTIVE...
+      QUANTUM KEY: 7f3a9b2c1d8e4f6a0b5c9d3e7f1a4b8c...
+      ZK PROOF VERIFIED: TRUE
+      POST-QUANTUM SHIELD: ENABLED
+      NEURAL HASH: sha3-512(pattern_data + quantum_salt)
+      REDUNDANCY NODES: [NV-001] [NV-002] [NV-003] [NV-004] [NV-005] [NV-006] [NV-007]
+      COLD STORAGE: SYNCHRONIZED
+      DATA INTEGRITY: ████████████████████ 100%
+      VAULT STATUS: FULLY SECURED ✓
+    </div>
+  </div>
+
+  <!-- PATTERNS LIST -->
+  <div class="panel" data-title="// YOUR NEURAL VAULT">
+    <div id="patterns-list">
+      <div class="empty-state">🧠 Loading your neural patterns...</div>
+    </div>
+  </div>
+
+</div>

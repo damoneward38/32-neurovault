@@ -1,0 +1,3 @@
+YOUR-API-KEY
+YOUR-PROJECT-ID
+YOUR-PROJECT.firebaseapp.com
