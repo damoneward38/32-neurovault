@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEUROVAULT — Neural Pattern Vault</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06060f;--panel:#0a0a1a;--card:#0f0f24;--cyan:#00e5ff;--purple:#a855f7;--gold:#ffd700;--green:#00ff88;--red:#ff5370;--text:#c8d6e5;--muted:#5a6e85;--border:rgba(0,229,255,.1)}
+body{background:radial-gradient(ellipse at 30% 10%,#12002a 0%,var(--bg) 50%);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:280px;background:var(--panel);border-right:1px solid var(--border);padding:20px;display:flex;flex-direction:column;gap:16px;overflow-y:auto;flex-shrink:0}
+.main-area{flex:1;padding:24px;overflow-y:auto}
+.profile-card{text-align:center;padding:20px;border-radius:14px;background:var(--card);border:1px solid var(--border)}
+.profile-avatar{font-size:40px}
+.profile-name{font-size:16px;font-weight:700;color:#fff;margin-top:6px}
+.profile-plan{font-size:10px;letter-spacing:2px;padding:3px 10px;border-radius:99px;background:rgba(168,85,247,.12);color:var(--purple);border:1px solid rgba(168,85,247,.2);display:inline-block;margin-top:4px}
+.profile-stats{display:flex;justify-content:space-around;margin-top:12px}
+.profile-stat-num{font-size:18px;font-weight:700;font-family:monospace;color:#fff}
+.profile-stat-label{font-size:8px;letter-spacing:2px;color:var(--muted);text-transform:uppercase}
+.section-title{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-top:8px;margin-bottom:4px}
+.status-row{display:flex;justify-content:space-between;padding:6px 0;font-size:11px;border-bottom:1px solid rgba(255,255,255,.03)}
+.status-label{color:var(--muted)}
+.status-value{color:var(--green);font-family:monospace;font-weight:700;font-size:11px}
+.wave-meter{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.wave-meter-label{width:16px;text-align:center;font-size:14px;color:var(--cyan)}
+.wave-meter-bar{flex:1;height:6px;background:var(--card);border-radius:99px;overflow:hidden}
+.wave-meter-fill{height:100%;border-radius:99px;transition:width .4s ease}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat-card{text-align:center;padding:16px;border-radius:12px;background:var(--card);border:1px solid var(--border)}
+.stat-card-icon{font-size:20px}
+.stat-card-num{font-size:20px;font-weight:700;font-family:monospace;color:#fff;margin-top:4px}
+.stat-card-label{font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-top:2px}
+.panel{border-radius:16px;background:var(--panel);border:1px solid var(--border);padding:20px;margin-bottom:20px;position:relative}
+.panel::before{content:attr(data-title);position:absolute;top:-9px;left:16px;font-size:9px;letter-spacing:2px;padding:2px 10px;background:var(--panel);border:1px solid var(--border);border-radius:6px;color:var(--muted)}
+.record-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:900px){.sidebar{display:none}.stats-row{grid-template-columns:1fr 1fr}.record-grid{grid-template-columns:1fr}}
+.input-group{display:flex;flex-direction:column;gap:4px}
+.input-group label{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase}
+.input-group input,.input-group select,.input-group textarea{padding:10px 12px;background:var(--card);border:1px solid var(--border);border-radius:8px;color:#fff;font-family:monospace;font-size:13px;outline:none}
+.input-group input:focus,.input-group select:focus{border-color:var(--cyan)}
+.save-btn{width:100%;padding:14px;border-radius:10px;border:none;font-weight:700;font-size:13px;letter-spacing:1px;cursor:pointer;background:linear-gradient(135deg,#a855f7,#00e5ff);color:#000;margin-top:14px;transition:all .2s}
+.save-btn:hover{filter:brightness(1.1)}
+.save-btn:active{transform:scale(.98)}
+.encryption-box{font-family:monospace;font-size:11px;line-height:1.8;padding:16px;background:rgba(0,229,255,.03);border-radius:10px;border:1px solid rgba(0,229,255,.08);color:var(--cyan);white-space:pre-wrap;word-break:break-all}
+.patterns-list{display:flex;flex-direction:column;gap:10px}
+.empty-state{color:var(--muted);font-size:12px;text-align:center;padding:20px}
+.pattern-card{display:flex;align-items:center;gap:14px;padding:14px;border-radius:12px;background:var(--card);border:1px solid var(--border);transition:all .2s}
+.pattern-card:hover{border-color:rgba(0,229,255,.2)}
+.p-icon{font-size:22px}
+.p-info{flex:1}
+.p-name{font-size:13px;font-weight:700;color:#fff}
+.p-meta{font-size:10px;color:var(--muted);font-family:monospace;margin-top:2px}
+.p-actions{display:flex;gap:6px}
+.p-btn{padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:10px;cursor:pointer;transition:all .2s;font-family:inherit}
+.p-btn:hover{color:#fff;border-color:var(--cyan)}
+.p-btn.del:hover{border-color:var(--red);color:var(--red)}
+.msg{font-size:11px;padding:10px;border-radius:8px;margin-top:10px;display:none;font-family:monospace}
+.msg.err{display:block;background:rgba(255,83,112,.1);border:1px solid rgba(255,83,112,.2);color:var(--red)}
+.msg.ok{display:block;background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.2);color:var(--green)}
+</style>
+</head>
+<body>
+<div class="layout">
+  <div class="sidebar">
+    <div class="profile-card">
+      <div class="profile-avatar">🧠</div>
+      <div class="profile-name" id="pName">Neural User</div>
+      <div class="profile-plan" id="pPlan">SYNAPSE</div>
+      <div class="profile-stats">
+        <div><div class="profile-stat-num" id="pPatterns">0</div><div class="profile-stat-label">Patterns</div></div>
+        <div><div class="profile-stat-num" id="pStored">0</div><div class="profile-stat-label">Stored</div></div>
+      </div>
+    </div>
+    <div class="section-title">SYSTEM STATUS</div>
+    <div><div class="status-row"><span class="status-label">QUANTUM VAULT</span><span class="status-value">ONLINE ●</span></div><div class="status-row"><span class="status-label">ENCRYPTION</span><span class="status-value">AES-512 ●</span></div><div class="status-row"><span class="status-label">NEURAL ENGINE</span><span class="status-value">ACTIVE ●</span></div><div class="status-row"><span class="status-label">QUBITS</span><span class="status-value">1121 ●</span></div><div class="status-row"><span class="status-label">MESH NODES</span><span class="status-value">2847 ●</span></div></div>
+    <div class="section-title">LIVE BRAINWAVE MONITOR</div>
+    <div class="wave-meter"><span class="wave-meter-label">δ</span><div class="wave-meter-bar"><div class="wave-meter-fill" id="wDelta" style="background:linear-gradient(90deg,#6600ff,#9900ff);width:45%"></div></div></div>
+    <div class="wave-meter"><span class="wave-meter-label">θ</span><div class="wave-meter-bar"><div class="wave-meter-fill" id="wTheta" style="background:linear-gradient(90deg,#0066ff,#00aaff);width:62%"></div></div></div>
+    <div class="wave-meter"><span class="wave-meter-label">α</span><div class="wave-meter-bar"><div class="wave-meter-fill" id="wAlpha" style="background:linear-gradient(90deg,#00aaff,#00ffff);width:78%"></div></div></div>
+    <div class="wave-meter"><span class="wave-meter-label">β</span><div class="wave-meter-bar"><div class="wave-meter-fill" id="wBeta" style="background:linear-gradient(90deg,#00ff88,#00ffcc);width:55%"></div></div></div>
+    <div class="wave-meter"><span class="wave-meter-label">γ</span><div class="wave-meter-bar"><div class="wave-meter-fill" id="wGamma" style="background:linear-gradient(90deg,#ffd700,#ffaa00);width:33%"></div></div></div>
+  </div>
+  <div class="main-area">
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-card-icon">🧠</div><div class="stat-card-num" id="totalPatterns">0</div><div class="stat-card-label">NEURAL PATTERNS</div></div>
+      <div class="stat-card"><div class="stat-card-icon">⚛️</div><div class="stat-card-num">1121</div><div class="stat-card-label">QUBITS ACTIVE</div></div>
+      <div class="stat-card"><div class="stat-card-icon">🔒</div><div class="stat-card-num">100%</div><div class="stat-card-label">DATA SECURE</div></div>
+      <div class="stat-card"><div class="stat-card-icon">⚡</div><div class="stat-card-num">99.99%</div><div class="stat-card-label">UPTIME</div></div>
+    </div>
+    <div class="panel" data-title="// RECORD NEURAL PATTERN">
+      <div class="record-grid">
+        <div class="input-group"><label>PATTERN NAME</label><input type="text" id="pNameInput" placeholder="e.g. Morning Focus Session"></div>
+        <div class="input-group"><label>BRAINWAVE TYPE</label><select id="waveType"><option value="DELTA">δ DELTA — Deep Sleep</option><option value="THETA">θ THETA — Deep Relaxation</option><option value="ALPHA" selected>α ALPHA — Calm Focus</option><option value="BETA">β BETA — Active Thinking</option><option value="GAMMA">γ GAMMA — Peak Performance</option></select></div>
+        <div class="input-group"><label>DURATION (MINUTES)</label><input type="number" id="duration" value="30" min="1" max="480"></div>
+        <div class="input-group"><label>INTENSITY LEVEL — <span id="intDisp">75%</span></label><input type="range" id="intensity" min="1" max="100" value="75" oninput="document.getElementById('intDisp').textContent=this.value+'%'"></div>
+      </div>
+      <div class="input-group" style="margin-top:12px"><label>NOTES</label><textarea id="notes" rows="2" placeholder="Optional notes about this neural session..."></textarea></div>
+      <button class="save-btn" onclick="savePattern()">⚛ SAVE TO QUANTUM VAULT</button>
+      <div class="msg err" id="dashErr"></div>
+      <div class="msg ok" id="dashOk"></div>
+    </div>
+    <div class="panel" data-title="// QUANTUM ENCRYPTION LAYER">
+      <div class="encryption-box" id="encDisplay">AES-512 ENCRYPTION ACTIVE
+QUANTUM KEY: 7f3a9b2c1d8e4f6a0b5c9d3e7f1a4b8c...
+ZK PROOF VERIFIED: TRUE
+POST-QUANTUM SHIELD: ENABLED
+NEURAL HASH: sha3-512(pattern_data + quantum_salt)
+REDUNDANCY NODES: [NV-001] [NV-002] [NV-003] [NV-004] [NV-005] [NV-006] [NV-007]
+COLD STORAGE: SYNCHRONIZED
+DATA INTEGRITY: ████████████████████ 100%
+VAULT STATUS: FULLY SECURED ✓</div>
+    </div>
+    <div class="panel" data-title="// YOUR NEURAL VAULT">
+      <div class="patterns-list" id="patternsList"><div class="empty-state">Loading your neural patterns...</div></div>
+    </div>
+  </div>
+</div>
+<script>
+const WAVE_ICONS={DELTA:'🌊',THETA:'🔮',ALPHA:'💎',BETA:'⚡',GAMMA:'✦'};
+let patterns=JSON.parse(localStorage.getItem('nv_patterns')||'[]');
+
+function load(){
+  document.getElementById('totalPatterns').textContent=patterns.length;
+  document.getElementById('pPatterns').textContent=patterns.length;
+  document.getElementById('pStored').textContent=patterns.length;
+  const list=document.getElementById('patternsList');
+  if(patterns.length===0){list.innerHTML='<div class="empty-state">🧠 No neural patterns yet. Record your first pattern above.</div>';return;}
+  list.innerHTML=patterns.map((p,i)=>`
+    <div class="pattern-card">
+      <div class="p-icon">${WAVE_ICONS[p.waveType]||'🧠'}</div>
+      <div class="p-info"><div class="p-name">${p.name}</div><div class="p-meta">${p.waveType} · ${p.duration}min · ${p.intensity}% · ${p.date}</div></div>
+      <div class="p-actions">
+        <button class="p-btn" onclick="replayPattern(${i})">▶ Replay</button>
+        <button class="p-btn del" onclick="deletePattern(${i})">✕</button>
+      </div>
+    </div>`).join('');
+}
+
+function savePattern(){
+  const name=document.getElementById('pNameInput').value.trim();
+  if(!name){showMsg('dashErr','Pattern name required');return;}
+  const p={name,waveType:document.getElementById('waveType').value,duration:parseInt(document.getElementById('duration').value),intensity:parseInt(document.getElementById('intensity').value),notes:document.getElementById('notes').value,date:new Date().toLocaleDateString()};
+  patterns.unshift(p);
+  localStorage.setItem('nv_patterns',JSON.stringify(patterns));
+  document.getElementById('pNameInput').value='';document.getElementById('notes').value='';
+  showMsg('dashOk','⚛ Pattern "'+name+'" encrypted and stored in quantum vault');
+  load();
+}
+
+function deletePattern(i){patterns.splice(i,1);localStorage.setItem('nv_patterns',JSON.stringify(patterns));load();}
+
+function replayPattern(i){
+  const p=patterns[i];
+  showMsg('dashOk','▶ Replaying '+p.name+' at '+p.waveType+' · '+p.duration+'min');
+}
+
+function showMsg(id,msg){
+  const el=document.getElementById(id);
+  el.textContent=msg;el.style.display='block';
+  setTimeout(()=>el.style.display='none',4000);
+}
+
+// Live brainwave animation
+setInterval(()=>{
+  ['wDelta','wTheta','wAlpha','wBeta','wGamma'].forEach(id=>{
+    const el=document.getElementById(id);
+    const base=parseInt(el.style.width)||50;
+    const newW=Math.max(10,Math.min(95,base+(Math.random()-.5)*16));
+    el.style.width=newW+'%';
+  });
+},800);
+
+// Encryption key rotation
+setInterval(()=>{
+  const chars='0123456789abcdef';
+  const key=Array.from({length:32},()=>chars[Math.floor(Math.random()*16)]).join('');
+  document.getElementById('encDisplay').innerHTML=
+`AES-512 ENCRYPTION ACTIVE
+QUANTUM KEY: ${key.slice(0,8)}...${key.slice(24)}
+ZK PROOF VERIFIED: TRUE
+POST-QUANTUM SHIELD: ENABLED
+NEURAL HASH: sha3-512(pattern_data + quantum_salt)
+REDUNDANCY NODES: [NV-001] [NV-002] [NV-003] [NV-004] [NV-005] [NV-006] [NV-007]
+COLD STORAGE: SYNCHRONIZED
+DATA INTEGRITY: ████████████████████ 100%
+VAULT STATUS: FULLY SECURED ✓`;
+},5000);
+
+load();
+</script>
+</body>
+</html>
