@@ -104,7 +104,7 @@ body{background:radial-gradient(ellipse at 30% 10%,#12002a 0%,var(--bg) 50%);col
     </div>
     <div class="panel" data-title="// QUANTUM ENCRYPTION LAYER">
       <div class="encryption-box" id="encDisplay">BROWSER LOCAL STORAGE — NOT ENCRYPTED
-QUANTUM KEY: 7f3a9b2c1d8e4f6a0b5c9d3e7f1a4b8c...
+NO KEY GENERATED: THIS IS NOT A CRYPTOGRAPHIC KEY
 ZERO-KNOWLEDGE PROOF: NOT IMPLEMENTED
 POST-QUANTUM SECURITY: NOT IMPLEMENTED
 NO CRYPTOGRAPHIC HASH IS GENERATED
@@ -175,21 +175,7 @@ setInterval(()=>{
   });
 },800);
 
-// Encryption key rotation
-setInterval(()=>{
-  const chars='0123456789abcdef';
-  const key=Array.from({length:32},()=>chars[Math.floor(Math.random()*16)]).join('');
-  document.getElementById('encDisplay').innerHTML=
-`BROWSER LOCAL STORAGE — NOT ENCRYPTED
-QUANTUM KEY: ${key.slice(0,8)}...${key.slice(24)}
-ZERO-KNOWLEDGE PROOF: NOT IMPLEMENTED
-POST-QUANTUM SECURITY: NOT IMPLEMENTED
-NO CRYPTOGRAPHIC HASH IS GENERATED
-REMOTE REDUNDANCY: NOT CONNECTED
-COLD STORAGE: NOT CONNECTED
-DATA INTEGRITY: NOT VERIFIED
-VAULT STATUS: BROWSER-LOCAL DEMO ONLY`;
-},5000);
+// No key-rotation animation: this demo does not create or rotate cryptographic keys.
 
 load();
 </script>
